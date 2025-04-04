@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { PaginationDto } from 'src/commons/dto/pagination.dto';
 
 @Controller('students')
 export class StudentsController {
@@ -13,13 +14,13 @@ export class StudentsController {
   }
 
   @Get()
-  findAll() {
-    return this.studentsService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.studentsService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studentsService.findOne(+id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.studentsService.findOne(term);
   }
 
   @Patch(':id')
@@ -28,7 +29,7 @@ export class StudentsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.studentsService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.studentsService.remove(id);
   }
 }
