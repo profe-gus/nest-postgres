@@ -48,7 +48,6 @@ export class StudentsService {
     if(isUUID(term)){
       student = await this.studentRepository.findOneBy({ id: term });
     }else{
-      /** Crear un queryBuilder, preparar la consulta y enviar un query */
       const queryBuilder = this.studentRepository.createQueryBuilder();
       student = await queryBuilder.where('UPPER(name)=:name or nickname=:nickname',{
         name: term.toUpperCase(),
