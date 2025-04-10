@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from 'src/commons/dto/pagination.dto';
 import { NotFoundError } from 'rxjs';
 import { isUUID } from 'class-validator';
+import { Grade } from './entities/grade.entity';
 
 @Injectable()
 export class StudentsService {
@@ -14,15 +15,22 @@ export class StudentsService {
   private logger = new Logger('StudentService');
   constructor(
     @InjectRepository(Student)
-    private readonly studentRepository: Repository<Student>
+    private readonly studentRepository: Repository<Student>,
+    @InjectRepository(Grade)
+    private readonly gradeRepository: Repository<Grade>
   ){}
 
   async create(createStudentDto: CreateStudentDto) {
     try{
+      const { grades=[], ...studentDetails }  = createStudentDto;
 
-      const student = this.studentRepository.create(createStudentDto);
+      const student = this.studentRepository.create({
+        ...studentDetails,
+        grades : grades.map( grade => this.gradeRepository.create(grade))
+      });
       await this.studentRepository.save(student);
-      return student
+      return student;
+
     }catch(error){
       this.logger.error(error.detail);
       this.handleExceptions(error);
@@ -63,8 +71,20 @@ export class StudentsService {
     
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async update(id: string, updateStudentDto: UpdateStudentDto) {
+    const student = await this.studentRepository.preload({
+      id:id,
+      ...updateStudentDto
+    })
+
+    if(!student) throw new NotFoundException(`Student with id ${id} not found`);
+
+    try{
+      await this.studentRepository.save(student);
+      return student;
+    }catch(error){
+      this.handleExceptions(error);
+    }
   }
 
   async remove(id: string) {
