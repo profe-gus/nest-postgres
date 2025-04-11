@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Grade } from "./grade.entity";
 
 @Entity()
@@ -34,7 +34,7 @@ export class Student {
         unique:true,
         nullable: true
     })
-    nickname: string
+    nickname?: string
 
     @OneToMany(
         () => Grade,
@@ -50,6 +50,14 @@ export class Student {
           }
     
           this.nickname = this.nickname
+                                        .toLowerCase()
+                                        .replaceAll(" ", "_")
+                                        +this.age;
+    }
+    
+    @BeforeUpdate()
+    checkNickNameUpdate(){
+        this.nickname = this.nickname!
                                         .toLowerCase()
                                         .replaceAll(" ", "_")
                                         +this.age;

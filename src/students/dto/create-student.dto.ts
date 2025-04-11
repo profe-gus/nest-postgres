@@ -28,7 +28,7 @@ export class CreateStudentDto {
 
     @IsString()
     @IsOptional()
-    nickname:string;
+    nickname?:string;
 
     @IsArray()
     @IsOptional()

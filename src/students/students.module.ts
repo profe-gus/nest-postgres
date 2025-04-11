@@ -10,6 +10,7 @@ import { Grade } from './entities/grade.entity';
   providers: [StudentsService],
   imports:[
     TypeOrmModule.forFeature([Student, Grade])
-  ]
+  ],
+  exports: [StudentsService]
 })
 export class StudentsModule {}

@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudentsModule } from './students/students.module';
 import { CommonsModule } from './commons/commons.module';
+import { SeedModule } from './seed/seed.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,7 +20,9 @@ import { CommonsModule } from './commons/commons.module';
       synchronize: true //Solo usarla en ambientes bajos, en producción hacer migraciones
     }),
     StudentsModule,
-    CommonsModule
+    CommonsModule,
+    SeedModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],

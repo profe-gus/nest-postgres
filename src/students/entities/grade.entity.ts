@@ -5,7 +5,7 @@ import { Student } from "./student.entity";
 export class Grade{
 
     @PrimaryGeneratedColumn('uuid')
-    id:string;
+    id?:string;
 
     @Column('text')
     subject: string;
@@ -15,8 +15,9 @@ export class Grade{
 
     @ManyToOne(
         () => Student,
-        (student) => student.grades
+        (student) => student.grades,
+        { onDelete: 'CASCADE' }
     )
-    student: Student
+    student?: Student
 
 }
