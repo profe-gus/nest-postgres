@@ -3,6 +3,8 @@ import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { PaginationDto } from 'src/commons/dto/pagination.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 
 @Controller('students')
 export class StudentsController {
@@ -14,6 +16,7 @@ export class StudentsController {
   }
 
   @Get()
+  @Auth(ValidRoles.admin)
   findAll(@Query() paginationDto: PaginationDto) {
     return this.studentsService.findAll(paginationDto);
   }
