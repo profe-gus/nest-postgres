@@ -1,12 +1,12 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { LoginUserDto } from './dto/Login-user.dto';
 import { JwtPayload } from './interfaces/jwt.interface';
 import { JwtService } from '@nestjs/jwt';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +29,7 @@ export class AuthService {
       delete user.password;
 
       return {
-        ...user,
+        user:user,
         token: this.getJwtToken({id: user.id})
       };
 
@@ -46,13 +46,15 @@ export class AuthService {
       select: { email: true, password: true, id:true}
     });
 
-    if(!user) throw new NotFoundException(`User with email ${email} not found`);
+    if(!user) throw new UnauthorizedException(`User with email ${email} not found`);
 
     if(!bcrypt.compareSync(password, user.password!))
-      throw new NotFoundException(`Email or password incorrect`)
+      throw new UnauthorizedException(`Email or password incorrect`)
+
+    delete user.password;
 
     return {
-      ...user,
+      user:user,
       token: this.getJwtToken({id: user.id})
     }
   }
@@ -67,7 +69,7 @@ export class AuthService {
         throw new BadRequestException(error.detail);
   
       this.logger.error(error.detail);
-      throw new InternalServerErrorException('Unspected error, check your server');
+      throw new InternalServerErrorException('Unspected error, check your server logs');
     }
 
 }
