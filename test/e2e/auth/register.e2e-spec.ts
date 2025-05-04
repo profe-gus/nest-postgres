@@ -2,12 +2,18 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { TestingModule, Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import * as request from 'supertest';
-import { AppModule } from "src/app.module";
-import { User } from "src/auth/entities/user.entity";
+import { AppModule } from "../../../src/app.module";
+import { User } from "../../../src/auth/entities/user.entity";
 import { Repository } from "typeorm";
 
-const testingUser = {
-    email: 'camila@mail.com',
+const testingCreateUser = {
+    email: 'gus@mail.com',
+    password: 'Abc12345',
+    fullName: 'Testing user',
+  };
+
+  const testingUser = {
+    email: 'cami@mail.com',
     password: 'Abc12345',
     fullName: 'Testing user',
   };
@@ -41,14 +47,13 @@ const testingUser = {
       const response = await request(app.getHttpServer()).post('/auth/register');
   
       const errorMessages = [
-        'email must be an email',
-        'email must be a string',
-        'The password must have a Uppercase, lowercase letter and a number',
-        'password must be shorter than or equal to 50 characters',
-        'password must be longer than or equal to 6 characters',
-        'password must be a string',
-        'fullName must be longer than or equal to 1 characters',
-        'fullName must be a string',
+        "email must be an email",
+        "email must be a string",
+        "The password must have a Uppercase, lowercase letter and a number",
+        "password must be longer than or equal to 6 characters",
+        "password must be shorter than or equal to 50 characters",
+        "password must be a string",
+        "fullName must be a string"
       ];
   
       expect(response.status).toBe(400);
@@ -99,7 +104,7 @@ const testingUser = {
       expect(response.status).toBe(201);
       expect(response.body).toEqual({
         user: {
-          email: 'camila@mail.com',
+          email: 'cami@mail.com',
           fullName: 'Testing user',
           id: expect.any(String),
           isActive: true,

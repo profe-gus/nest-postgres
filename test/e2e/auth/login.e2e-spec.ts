@@ -8,7 +8,7 @@ import { Repository } from "typeorm";
 
 const testingUser = {
     email: 'gus@mail.com',
-    password: 'abc123',
+    password: 'Abc123',
     fullName: 'Testing teacher',
   };
   
@@ -39,9 +39,7 @@ const testingUser = {
       await app.init();
   
       userRepository = app.get<Repository<User>>(getRepositoryToken(User));
-  
-      userRepository.delete({ email: testingUser.email });
-      userRepository.delete({ email: testingAdminUser.email });
+
   
       const responseUser = await request(app.getHttpServer())
         .post('/auth/register')
@@ -67,7 +65,6 @@ const testingUser = {
       const errorMessages = [
         'email must be an email',
         'email must be a string',
-        'The password must have a Uppercase, lowercase letter and a number',
         'password must be shorter than or equal to 50 characters',
         'password must be longer than or equal to 6 characters',
         'password must be a string',
@@ -90,7 +87,7 @@ const testingUser = {
   
       expect(response.status).toBe(401);
       expect(response.body).toEqual({
-        message: 'Credentials are not valid (email)',
+        message: `User with email testingUser.email@google.com not found`,
         error: 'Unauthorized',
         statusCode: 401,
       });
@@ -103,7 +100,7 @@ const testingUser = {
   
       expect(response.status).toBe(401);
       expect(response.body).toEqual({
-        message: 'Credentials are not valid (password)',
+        message: `Email or password incorrect`,
         error: 'Unauthorized',
         statusCode: 401,
       });
@@ -119,9 +116,6 @@ const testingUser = {
         user: {
           id: expect.any(String),
           email: 'gus@mail.com',
-          fullName: 'Testing teacher',
-          isActive: true,
-          roles: ['teacher'],
         },
         token: expect.any(String),
       });

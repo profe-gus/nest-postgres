@@ -4,8 +4,7 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { DataSource, Repository } from 'typeorm';
-import { PaginationDto } from 'src/commons/dto/pagination.dto';
-import { NotFoundError } from 'rxjs';
+import { PaginationDto } from '../commons/dto/pagination.dto';
 import { isUUID } from 'class-validator';
 import { Grade } from './entities/grade.entity';
 

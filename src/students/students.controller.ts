@@ -5,12 +5,17 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { PaginationDto } from '../commons/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { ValidRoles } from '../auth/enums/valid-roles.enum';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from '../auth/entities/user.entity';
 
+ApiTags('Students')
 @Controller('students')
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
   @Post()
+  @ApiResponse({ status: 201, description: 'Product was created', type: User  })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   create(@Body() createStudentDto: CreateStudentDto) {
     return this.studentsService.create(createStudentDto);
   }
@@ -32,6 +37,10 @@ export class StudentsController {
   }
 
   @Delete(':id')
+  @ApiResponse({ status: 200, description: 'Student was removed' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Token related.' })
+  @Auth(ValidRoles.admin, ValidRoles.superUser)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.studentsService.remove(id);
   }
