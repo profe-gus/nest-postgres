@@ -17,7 +17,19 @@ async function bootstrap() {
     .setTitle('Students RESTFul API')
     .setDescription('Students management endpoints')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name:'JWT',
+        description: 'Enter JWT Token',
+        in: 'header'
+    },
+    'JWT-auth'
+  )
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 

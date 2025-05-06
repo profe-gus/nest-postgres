@@ -5,7 +5,7 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { PaginationDto } from '../commons/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { ValidRoles } from '../auth/enums/valid-roles.enum';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../auth/entities/user.entity';
 
 ApiTags('Students')
@@ -21,6 +21,8 @@ export class StudentsController {
   }
 
   @Get()
+  @ApiBearerAuth('JWT-auth')
+  @ApiResponse({ status: 401, description: 'Unauthorize' })
   @Auth(ValidRoles.admin)
   findAll(@Query() paginationDto: PaginationDto) {
     return this.studentsService.findAll(paginationDto);
